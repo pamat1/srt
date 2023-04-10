@@ -109,7 +109,12 @@ void srt_delete_config(SRT_SOCKOPT_CONFIG* in)
 }
 
 // Binding and connection management
-int srt_bind(SRTSOCKET u, const struct sockaddr * name, int namelen) { return CUDT::bind(u, name, namelen); }
+int srt_bind(SRTSOCKET u, const struct sockaddr * name, int namelen) { 
+   int opval = 1;
+   
+   CUDT::setsockopt(u, SOL_SOCKET, SO_REUSEPORT, &opval, sozeof(opval))
+   return CUDT::bind(u, name, namelen); 
+}
 int srt_bind_acquire(SRTSOCKET u, UDPSOCKET udpsock) { return CUDT::bind(u, udpsock); }
 int srt_listen(SRTSOCKET u, int backlog) { return CUDT::listen(u, backlog); }
 SRTSOCKET srt_accept(SRTSOCKET u, struct sockaddr * addr, int * addrlen) { return CUDT::accept(u, addr, addrlen); }
